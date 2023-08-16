@@ -17,12 +17,16 @@ class SocialHubClientAutoConfiguration {
 
     private final String amqpDestination = "socialhub-requests";
 
-    @Bean
+    public static final String SOCIALHUB_REQUESTS_CHANNEL_NAME = "requests";
+
+    public static final String SOCIALHUB_ERRORS_CHANNEL_NAME = "erros";
+
+    @Bean(name = SOCIALHUB_REQUESTS_CHANNEL_NAME)
     MessageChannel socialHubRequestsMessageChannel() {
         return MessageChannels.direct().getObject();
     }
 
-    @Bean
+    @Bean(name = SOCIALHUB_ERRORS_CHANNEL_NAME)
     MessageChannel socialHubErrorsMessageChannel() {
         return MessageChannels.publishSubscribe().getObject();
     }
