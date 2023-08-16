@@ -29,7 +29,7 @@ public class SocialHub {
 
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
-    private final MessageChannel channel, errors;
+    protected final MessageChannel channel, errors;
 
     private static void notNull(Object o, String description) {
         Assert.notNull(o, "the %s should not be null".formatted(description));
@@ -48,9 +48,11 @@ public class SocialHub {
         this.objectMapper = objectMapper;
     }
 
-    public record Post(String[] platforms, String content, MediaResource[] media) { }
+    public record Post(String[] platforms, String content, MediaResource[] media) {
+    }
 
-    public record MediaResource(MediaType mediaType, Resource resource) {  }
+    public record MediaResource(MediaType mediaType, Resource resource) {
+    }
 
     public enum MediaType {
 
@@ -71,7 +73,8 @@ public class SocialHub {
 
     /**
      * Returns an access token given a proper pair of client-credentials
-     * @param clientId the client ID
+     *
+     * @param clientId     the client ID
      * @param clientSecret the client secret
      * @return an OAuth access token
      */
@@ -93,7 +96,6 @@ public class SocialHub {
     }
 
     /**
-     *
      * @param token an OAuth access token. See {@link this#authenticate(String, String)} to obtain a valid token.
      * @param post  the post to submit
      * @throws Exception it's the internet. Anything could go wrong.

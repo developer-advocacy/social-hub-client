@@ -5,40 +5,26 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.integration.amqp.dsl.Amqp;
 import org.springframework.integration.dsl.IntegrationFlow;
-import org.springframework.integration.dsl.MessageChannels;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
 @AutoConfiguration
+@Import(SocialHubChannels.class)
 class SocialHubClientAutoConfiguration {
 
     private final String amqpDestination = "socialhub-requests";
 
-    public static final String SOCIALHUB_REQUESTS_CHANNEL_NAME = "socialHubRequests";
-
-    public static final String SOCIALHUB_ERRORS_CHANNEL_NAME = "socialHubErrors";
-
-    @Bean(name = SOCIALHUB_REQUESTS_CHANNEL_NAME)
-    MessageChannel socialHubRequestsMessageChannel() {
-        return MessageChannels.direct().getObject();
-    }
-
-    @Bean(name = SOCIALHUB_ERRORS_CHANNEL_NAME)
-    MessageChannel socialHubErrorsMessageChannel() {
-        return MessageChannels.publishSubscribe().getObject();
-    }
-
     @Bean
-    IntegrationFlow outboundAmqpAdapterFlow(AmqpTemplate amqpTemplate) {
+    IntegrationFlow outboundAmqpAdapterFlow(SocialHubChannels socialHubChannels, AmqpTemplate amqpTemplate) {
         var amqpOutboundAdapter = Amqp//
                 .outboundAdapter(amqpTemplate)//
                 .exchangeName(this.amqpDestination)//
                 .routingKey(this.amqpDestination);
         return IntegrationFlow//
-                .from(this.socialHubRequestsMessageChannel())//
+                .from(socialHubChannels.socialHubRequestsMessageChannel())//
                 .handle(amqpOutboundAdapter)//
                 .get();
     }
@@ -56,12 +42,13 @@ class SocialHubClientAutoConfiguration {
     }
 
     @Bean
-    SocialHub socialHub(ObjectMapper objectMapper, RestTemplate restTemplate) {
+    SocialHub socialHub(SocialHubChannels socialHubChannels, ObjectMapper objectMapper, RestTemplate restTemplate) {
         return new SocialHub(
-                this.socialHubRequestsMessageChannel(),//
-                this.socialHubErrorsMessageChannel(),//
+                socialHubChannels.socialHubRequestsMessageChannel(),//
+                socialHubChannels.socialHubErrorsMessageChannel(),//
                 restTemplate,//
                 objectMapper//
         );
     }
 }
+
