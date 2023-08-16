@@ -17,9 +17,9 @@ class SocialHubClientAutoConfiguration {
 
     private final String amqpDestination = "socialhub-requests";
 
-    public static final String SOCIALHUB_REQUESTS_CHANNEL_NAME = "requests";
+    public static final String SOCIALHUB_REQUESTS_CHANNEL_NAME = "socialHubRequests";
 
-    public static final String SOCIALHUB_ERRORS_CHANNEL_NAME = "erros";
+    public static final String SOCIALHUB_ERRORS_CHANNEL_NAME = "socialHubErrors";
 
     @Bean(name = SOCIALHUB_REQUESTS_CHANNEL_NAME)
     MessageChannel socialHubRequestsMessageChannel() {
