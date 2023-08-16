@@ -2,18 +2,17 @@ package com.joshlong.socialhubclient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.amqp.dsl.Amqp;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
-@Configuration
+@AutoConfiguration
 class SocialHubClientAutoConfiguration {
 
     private final String amqpDestination = "socialhub-requests";
@@ -60,11 +59,5 @@ class SocialHubClientAutoConfiguration {
                 restTemplate,//
                 objectMapper//
         );
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(JwtAuthenticationConverter.class)
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        return new JwtAuthenticationConverter();
     }
 }
