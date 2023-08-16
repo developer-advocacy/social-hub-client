@@ -43,3 +43,5 @@ class SocialHubTest {
         this.socialHub.post("123", new SocialHub.Post("twitter".split(","), content, new SocialHub.MediaResource[0]));
     }
 }
+
+
